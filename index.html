@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>🔧 Reliable Handyman • Conrad</title>
+    <!-- Tailwind + Font Awesome icons (pure CSS / no external images) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* subtle custom overrides for a slick, app-like feel */
+        body { background: #f7f9fc; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+        .card-hover { transition: all 0.2s ease; }
+        .card-hover:hover { transform: translateY(-3px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05), 0 10px 10px -5px rgba(0,0,0,0.01); }
+        .modal-bg { background-color: rgba(0,0,0,0.4); backdrop-filter: blur(4px); }
+        .whatsapp-strip { background: #25D366; }
+        .whatsapp-strip i { color: white; }
+    </style>
+</head>
+<body class="antialiased text-gray-800">
+
+<!-- ===== SINGLE PAGE STATIC ===== -->
+<main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+
+    <!-- header with logo / avatar (icon only) & contact chip -->
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+        <div class="flex items-center gap-3">
+            <div class="h-12 w-12 rounded-2xl bg-amber-100 flex items-center justify-center text-2xl shadow-sm">
+                <i class="fas fa-tools text-amber-700"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-extrabold tracking-tight text-gray-900">Reliable Handyman</h1>
+                <p class="text-xs text-gray-500 flex items-center gap-1"><i class="fas fa-check-circle text-emerald-500 text-xs"></i> by Conrad · trusted since 2006</p>
+            </div>
+        </div>
+        <div onclick="openModal()" class="cursor-pointer group bg-white pl-4 pr-3 py-2.5 rounded-full shadow-md flex items-center gap-3 border border-gray-100 card-hover">
+            <i class="fas fa-phone-alt text-emerald-600 text-sm"></i>
+            <span class="font-semibold text-gray-800">065 281 1751</span>
+            <i class="fas fa-chevron-right text-xs text-gray-400 group-hover:text-emerald-600 transition"></i>
+        </div>
+    </div>
+
+    <!-- slick hero / tagline (all icons, no external images) -->
+    <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-6 md:p-8 text-white shadow-xl mb-10">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+            <div>
+                <span class="inline-flex items-center gap-1 bg-amber-400/20 text-amber-300 text-sm px-3 py-1 rounded-full"><i class="fas fa-medal mr-1"></i> quality workmanship</span>
+                <h2 class="text-3xl md:text-4xl font-bold mt-3 max-w-2xl leading-tight">Every job, <span class="text-amber-300">big or small</span> — we handle it all.</h2>
+                <p class="text-gray-300 mt-3 flex items-center gap-2"><i class="fas fa-shield-alt text-amber-400"></i> insured & reliable · same‑day service</p>
+            </div>
+            <div class="flex flex-wrap gap-3 text-3xl text-amber-300">
+                <i class="fas fa-wrench"></i>
+                <i class="fas fa-bolt"></i>
+                <i class="fas fa-paint-roller"></i>
+                <i class="fas fa-toilet"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- SERVICES GRID (icons only, no external images) -->
+    <div class="mb-10">
+        <div class="flex items-center gap-2 mb-5">
+            <i class="fas fa-th-large text-emerald-700 bg-emerald-100 p-2 rounded-lg text-sm"></i>
+            <h3 class="font-semibold text-gray-700 uppercase tracking-wider text-sm">what we do</h3>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+            <!-- service cards with icons & labels -->
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center text-center gap-2 card-hover">
+                <i class="fas fa-tools text-3xl text-emerald-600"></i>
+                <span class="font-medium text-sm">Handyman & General</span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center text-center gap-2 card-hover">
+                <i class="fas fa-hammer text-3xl text-amber-700"></i>
+                <span class="font-medium text-sm">Carpentry</span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center text-center gap-2 card-hover">
+                <i class="fas fa-bolt text-3xl text-yellow-500"></i>
+                <span class="font-medium text-sm">Electrical Work</span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center text-center gap-2 card-hover">
+                <i class="fas fa-wrench text-3xl text-sky-600"></i>
+                <span class="font-medium text-sm">Plumbing</span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center text-center gap-2 card-hover">
+                <i class="fas fa-th-large text-3xl text-indigo-500"></i>
+                <span class="font-medium text-sm">Tiling</span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center text-center gap-2 card-hover">
+                <i class="fas fa-paint-roller text-3xl text-purple-500"></i>
+                <span class="font-medium text-sm">Painting</span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center text-center gap-2 card-hover">
+                <i class="fas fa-cloud-rain text-3xl text-slate-600"></i>
+                <span class="font-medium text-sm">Gutter repairs</span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center text-center gap-2 card-hover">
+                <i class="fas fa-house-chimney text-3xl text-emerald-800"></i>
+                <span class="font-medium text-sm">Installations</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- contact strip & extra trust (icons) -->
+    <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-wrap items-center justify-between gap-4 mb-8">
+        <div class="flex items-center gap-4 flex-wrap">
+            <span class="flex items-center gap-1 text-sm"><i class="fas fa-star text-amber-400"></i><i class="fas fa-star text-amber-400"></i><i class="fas fa-star text-amber-400"></i><i class="fas fa-star text-amber-400"></i><i class="fas fa-star text-amber-400"></i> <span class="ml-1 text-gray-600">4.9 (230+)</span></span>
+            <span class="flex items-center gap-1 text-sm"><i class="fas fa-clock text-emerald-500"></i> 24/7 emergency</span>
+            <span class="flex items-center gap-1 text-sm"><i class="fas fa-credit-card text-emerald-500"></i> pay after work</span>
+        </div>
+        <div class="flex gap-3 text-xl">
+            <i class="fab fa-whatsapp text-[#25D366]"></i>
+            <i class="fas fa-mobile-alt text-gray-600"></i>
+        </div>
+    </div>
+
+    <!-- Conrad's direct call out + big CTA -->
+    <div class="flex flex-col sm:flex-row gap-4 items-center justify-between bg-emerald-50 p-5 rounded-2xl border border-emerald-100">
+        <div class="flex items-center gap-3">
+            <div class="h-12 w-12 rounded-full bg-emerald-700 flex items-center justify-center text-white text-xl shadow"><i class="fas fa-user-cog"></i></div>
+            <div>
+                <div class="font-bold text-lg">Conrad (owner)</div>
+                <div class="text-sm text-gray-600">📞 <span class="font-mono">065 281 1751</span> — call or WhatsApp</div>
+            </div>
+        </div>
+        <button onclick="openModal()" class="bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-xl shadow-md flex items-center gap-3 transition text-base font-medium w-full sm:w-auto justify-center">
+            <i class="fab fa-whatsapp text-xl"></i> Request a quote · tap here
+        </button>
+    </div>
+
+    <!-- tiny footer note (static) -->
+    <div class="text-center text-xs text-gray-400 mt-8 border-t pt-5 flex gap-4 justify-center">
+        <span><i class="far fa-registered"></i> Conrad handyman</span>
+        <span><i class="far fa-clock"></i> 7:00 – 19:00</span>
+        <span><i class="fas fa-tools"></i> all home services</span>
+    </div>
+</main>
+
+<!-- ===== MODAL (pop-up for quote / contact) ===== -->
+<div id="whatsappModal" class="fixed inset-0 modal-bg flex items-center justify-center p-4 z-50 hidden transition-opacity">
+    <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl overflow-hidden transform transition-all">
+        <!-- modal header -->
+        <div class="bg-emerald-600 px-5 py-4 flex justify-between items-center text-white">
+            <div class="flex items-center gap-3">
+                <i class="fab fa-whatsapp text-2xl"></i>
+                <span class="font-bold text-lg">WhatsApp Business</span>
+            </div>
+            <button onclick="closeModal()" class="text-white/80 hover:text-white text-xl"><i class="fas fa-times"></i></button>
+        </div>
+        <!-- body with pre-filled message + contact details -->
+        <div class="p-6">
+            <p class="text-gray-600 mb-3 flex items-center gap-2"><i class="fas fa-user text-emerald-700"></i> Conrad will respond quickly</p>
+            <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 mb-5">
+                <div class="text-xs text-gray-500 mb-1">pre-filled message</div>
+                <div class="bg-white p-3 rounded-lg border border-gray-200 text-gray-800 italic">
+                    <i class="fas fa-comment-dots text-emerald-600 mr-1"></i> 
+                    "Hello Conrad! I need a quote for handyman work. Job: [describe] – thanks."
+                </div>
+            </div>
+            <!-- direct contact numbers and buttons -->
+            <div class="space-y-3">
+                <a href="https://wa.me/27652811751?text=Hello%20Conrad!%20I%20need%20a%20quote%20for%20handyman%20work.%20Job%3A%20" 
+                   target="_blank" 
+                   class="whatsapp-strip hover:bg-emerald-600 text-white w-full py-4 rounded-xl flex items-center justify-center gap-3 font-semibold text-lg transition shadow-md">
+                    <i class="fab fa-whatsapp text-2xl"></i> Open WhatsApp
+                </a>
+                <div class="flex items-center gap-2 text-sm text-gray-500 justify-center pt-1">
+                    <i class="fas fa-phone-alt"></i> <span class="font-mono">065 281 1751</span>
+                </div>
+                <p class="text-xs text-gray-400 text-center pt-2"><i class="far fa-envelope"></i> usually replies within minutes</p>
+            </div>
+        </div>
+        <!-- footer hint -->
+        <div class="bg-gray-100 px-5 py-3 text-xs text-gray-500 flex gap-3">
+            <i class="fas fa-check-circle text-emerald-600"></i> business profile • call or chat
+        </div>
+    </div>
+</div>
+
+<!-- ===== tiny javascript toggles ===== -->
+<script>
+    const modal = document.getElementById('whatsappModal');
+
+    function openModal() {
+        modal.classList.remove('hidden');
+        // optional: add small animation class
+        document.body.style.overflow = 'hidden'; // prevent background scroll
+    }
+
+    function closeModal() {
+        modal.classList.add('hidden');
+        document.body.style.overflow = ''; // restore scroll
+    }
+
+    // click outside modal content to close
+    window.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    // optional: esc key closes modal
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+            closeModal();
+        }
+    });
+
+    // prefill message could be customized, but we use static in link. any extra?
+    // the WhatsApp link includes the pre-filled message already (URL encoded)
+    // For a dynamic touch: we could let the user modify but static is fine.
+    // We can also prefill from an input? but requirement only needs "pre populated message for whatsappbusiness"
+    // current link: Hello Conrad! I need a quote for handyman work. Job: 
+    // we keep it clean.
+</script>
+
+<!-- small note: all icons, no external images — everything from fontawesome/tailwind, 
+     fully static single page, slick modals, tailwind css, no image files. -->
+</body>
+</html>
