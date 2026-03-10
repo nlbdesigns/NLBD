@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>🔧 Reliable Handyman • Conrad</title>
+    <!-- Tailwind + Font Awesome (icons only) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body { background: #f7f9fc; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+        .card-hover { transition: all 0.2s ease; }
+        .card-hover:hover { transform: translateY(-3px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05), 0 10px 10px -5px rgba(0,0,0,0.01); }
+        .modal-bg { background-color: rgba(0,0,0,0.4); backdrop-filter: blur(4px); }
+        .whatsapp-strip { background: #25D366; }
+        .whatsapp-strip i { color: white; }
+        /* gallery image styling */
+        .gallery-img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            border-radius: 1rem;
+            background: #eef2f6;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .gallery-img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .gallery-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body class="antialiased text-gray-800">
+
+<!-- ===== SINGLE PAGE ===== -->
+<main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+
+    <!-- header with logo, facebook page link, and contact chip -->
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+        <div class="flex items-center gap-3">
+            <div class="h-12 w-12 rounded-2xl bg-amber-100 flex items-center justify-center text-2xl shadow-sm">
+                <i class="fas fa-tools text-amber-700"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-extrabold tracking-tight text-gray-900">Reliable Handyman</h1>
+                <p class="text-xs text-gray-500 flex items-center gap-1"><i class="fas fa-check-circle text-emerald-500 text-xs"></i> by Conrad · trusted since 2006</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <!-- facebook page icon -->
+            <a href="https://www.facebook.com/people/New-life-by-design/61587231983057/" target="_blank" class="bg-white p-2.5 rounded-full shadow-md border border-gray-100 text-indigo-600 hover:text-indigo-800 transition text-xl flex items-center justify-center w-11 h-11">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <!-- clickable phone chip -->
+            <div onclick="openModal('contact')" class="cursor-pointer group bg-white pl-4 pr-3 py-2.5 rounded-full shadow-md flex items-center gap-3 border border-gray-100 card-hover">
+                <i class="fas fa-phone-alt text-emerald-600 text-sm"></i>
+                <span class="font-semibold text-gray-800">065 281 1751</span>
+                <i class="fas fa-chevron-right text-xs text-gray-400 group-hover:text-emerald-600 transition"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- hero / tagline -->
+    <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-6 md:p-8 text-white shadow-xl mb-10">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+            <div>
+                <span class="inline-flex items-center gap-1 bg-amber-400/20 text-amber-300 text-sm px-3 py-1 rounded-full"><i class="fas fa-medal mr-1"></i> quality workmanship</span>
+                <h2 class="text-3xl md:text-4xl font-bold mt-3 max-w-2xl leading-tight">Every job, <span class="text-amber-300">big or small</span> — we handle it all.</h2>
+                <p class="text-gray-300 mt-3 flex items-center gap-2"><i class="fas fa-shield-alt text-amber-400"></i> insured & reliable · same‑day service</p>
+            </div>
+            <div class="flex flex-wrap gap-3 text-3xl text-amber-300">
+                <i class="fas fa-wrench"></i> <i class="fas fa-bolt"></i> <i class="fas fa-paint-roller"></i> <i class="fas fa-toilet"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- SERVICES GRID (each card opens detailed modal) -->
+    <div class="mb-8">
+        <div class="flex items-center gap-2 mb-5">
+            <i class="fas fa-th-large text-emerald-700 bg-emerald-100 p-2 rounded-lg text-sm"></i>
+            <h3 class="font-semibold text-gray-700 uppercase tracking-wider text-sm">tap a service for details & quote</h3>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+            <!-- service cards with icons - each calls openServiceModal with service name -->
+            <div onclick="openServiceModal('handyman')" class="cursor-pointer bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center text-center gap-2 card-hover">
+                <i class="fas fa-tools text-3xl text-emerald-600"></i>
+                <span class="font-medium text-sm">Handyman & General</span>
+            </div>
+            <div onclick="openServiceModal('carpentry')" class="cursor-pointer bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center text-center gap-2 card-hover">
+                <i class="fas fa-hammer text-3xl text-amber-700"></i>
+                <span class="font-medium text-sm">Carpentry</span>
+            </div>
+            <div onclick="openServiceModal('electrical')" class="cursor-pointer bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center text-center gap-2 card-hover">
+                <i class="fas fa-bolt text-3xl text-yellow-500"></i>
+                <span class="font-medium text-sm">Electrical Work</span>
+            </div>
+            <div onclick="openServiceModal('plumbing')" class="cursor-pointer bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center text-center gap-2 card-hover">
+                <i class="fas fa-wrench text-3xl text-sky-600"></i>
+                <span class="font-medium text-sm">Plumbing</span>
+            </div>
+            <div onclick="openServiceModal('tiling')" class="cursor-pointer bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center text-center gap-2 card-hover">
+                <i class="fas fa-th-large text-3xl text-indigo-500"></i>
+                <span class="font-medium text-sm">Tiling</span>
+            </div>
+            <div onclick="openServiceModal('painting')" class="cursor-pointer bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center text-center gap-2 card-hover">
+                <i class="fas fa-paint-roller text-3xl text-purple-500"></i>
+                <span class="font-medium text-sm">Painting</span>
+            </div>
+            <div onclick="openServiceModal('gutter')" class="cursor-pointer bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center text-center gap-2 card-hover">
+                <i class="fas fa-cloud-rain text-3xl text-slate-600"></i>
+                <span class="font-medium text-sm">Gutter repairs</span>
+            </div>
+            <div onclick="openServiceModal('install')" class="cursor-pointer bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center text-center gap-2 card-hover">
+                <i class="fas fa-house-chimney text-3xl text-emerald-800"></i>
+                <span class="font-medium text-sm">Installations</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent works gallery trigger + Facebook + contact strip -->
+    <div class="flex flex-col sm:flex-row gap-4 items-stretch justify-between mb-8">
+        <button onclick="openGalleryModal()" class="bg-white border border-gray-200 hover:bg-gray-50 text-gray-800 px-5 py-4 rounded-xl shadow-sm flex items-center gap-3 transition flex-1 justify-center">
+            <i class="fas fa-images text-2xl text-emerald-600"></i>
+            <span class="font-medium">📸 Recent works (10 photos)</span>
+            <i class="fas fa-chevron-right text-gray-400"></i>
+        </button>
+        <a href="https://www.facebook.com/people/New-life-by-design/61587231983057/" target="_blank" class="bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 text-indigo-800 px-5 py-4 rounded-xl shadow-sm flex items-center gap-3 transition flex-1 justify-center">
+            <i class="fab fa-facebook text-2xl"></i>
+            <span class="font-medium">New life by design FB</span>
+        </a>
+    </div>
+
+    <!-- contact strip & trust icons -->
+    <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-wrap items-center justify-between gap-4 mb-8">
+        <div class="flex items-center gap-4 flex-wrap">
+            <span class="flex items-center gap-1 text-sm"><i class="fas fa-star text-amber-400"></i><i class="fas fa-star text-amber-400"></i><i class="fas fa-star text-amber-400"></i><i class="fas fa-star text-amber-400"></i><i class="fas fa-star text-amber-400"></i> <span class="ml-1 text-gray-600">4.9 (230+)</span></span>
+            <span class="flex items-center gap-1 text-sm"><i class="fas fa-clock text-emerald-500"></i> 24/7 emergency</span>
+            <span class="flex items-center gap-1 text-sm"><i class="fas fa-credit-card text-emerald-500"></i> pay after work</span>
+        </div>
+        <div class="flex gap-3 text-xl">
+            <i class="fab fa-whatsapp text-[#25D366]"></i>
+            <i class="fas fa-mobile-alt text-gray-600"></i>
+        </div>
+    </div>
+
+    <!-- Conrad direct + big CTA (modal for contact) -->
+    <div class="flex flex-col sm:flex-row gap-4 items-center justify-between bg-emerald-50 p-5 rounded-2xl border border-emerald-100">
+        <div class="flex items-center gap-3">
+            <div class="h-12 w-12 rounded-full bg-emerald-700 flex items-center justify-center text-white text-xl shadow"><i class="fas fa-user-cog"></i></div>
+            <div>
+                <div class="font-bold text-lg">Conrad (owner)</div>
+                <div class="text-sm text-gray-600">📞 <span class="font-mono">065 281 1751</span> — call or WhatsApp</div>
+            </div>
+        </div>
+        <button onclick="openModal('contact')" class="bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-xl shadow-md flex items-center gap-3 transition text-base font-medium w-full sm:w-auto justify-center">
+            <i class="fab fa-whatsapp text-xl"></i> Request a quote · tap here
+        </button>
+    </div>
+
+    <!-- footer -->
+    <div class="text-center text-xs text-gray-400 mt-8 border-t pt-5 flex gap-4 justify-center">
+        <span><i class="far fa-registered"></i> Conrad handyman</span>
+        <span><i class="far fa-clock"></i> 7:00 – 19:00</span>
+        <span><i class="fas fa-tools"></i> all home services</span>
+    </div>
+</main>
+
+<!-- ===== MODAL: Service details ===== -->
+<div id="serviceModal" class="fixed inset-0 modal-bg flex items-center justify-center p-4 z-50 hidden transition-opacity">
+    <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl overflow-hidden">
+        <div class="bg-emerald-600 px-5 py-4 flex justify-between items-center text-white">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-wrench text-2xl" id="serviceModalIcon"></i>
+                <span class="font-bold text-lg" id="serviceModalTitle">Service</span>
+            </div>
+            <button onclick="closeServiceModal()" class="text-white/80 hover:text-white text-xl"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="p-6">
+            <div class="mb-4 text-gray-700" id="serviceModalDescription">
+                <!-- dynamic content -->
+            </div>
+            <div class="bg-gray-50 p-3 rounded-lg text-sm flex items-start gap-2 mb-4">
+                <i class="fas fa-info-circle text-emerald-700 mt-1"></i>
+                <span id="serviceModalExtra">All work guaranteed · free estimate</span>
+            </div>
+            <!-- WhatsApp button with pre-filled message (dynamic) -->
+            <a href="#" id="serviceWhatsAppLink" target="_blank" class="whatsapp-strip hover:bg-emerald-600 text-white w-full py-4 rounded-xl flex items-center justify-center gap-3 font-semibold text-lg transition shadow-md">
+                <i class="fab fa-whatsapp text-2xl"></i> Quote for this service
+            </a>
+            <p class="text-xs text-gray-400 text-center mt-3"><i class="fas fa-phone-alt"></i> Conrad: 065 281 1751</p>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL: Recent works gallery with actual images img1.jpg - img10.jpg ===== -->
+<div id="galleryModal" class="fixed inset-0 modal-bg flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-2xl w-full shadow-2xl max-h-[90vh] flex flex-col">
+        <div class="bg-indigo-600 px-5 py-4 flex justify-between items-center text-white">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-camera-retro text-2xl"></i>
+                <span class="font-bold text-lg">Recent works (img1.jpg - img10.jpg)</span>
+            </div>
+            <button onclick="closeGalleryModal()" class="text-white/80 hover:text-white text-xl"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="p-5 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <!-- gallery images: actual jpg files from img1.jpg to img10.jpg (placeholders with actual img tags) -->
+            <div class="gallery-item"><img src="img1.jpg" alt="work 1" class="gallery-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><div class="gallery-img hidden items-center justify-center bg-gray-200 text-gray-500"><i class="fas fa-image mr-1"></i> img1</div></div>
+            <div class="gallery-item"><img src="img2.jpg" alt="work 2" class="gallery-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><div class="gallery-img hidden items-center justify-center bg-gray-200 text-gray-500"><i class="fas fa-image mr-1"></i> img2</div></div>
+            <div class="gallery-item"><img src="img3.jpg" alt="work 3" class="gallery-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><div class="gallery-img hidden items-center justify-center bg-gray-200 text-gray-500"><i class="fas fa-image mr-1"></i> img3</div></div>
+            <div class="gallery-item"><img src="img4.jpg" alt="work 4" class="gallery-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><div class="gallery-img hidden items-center justify-center bg-gray-200 text-gray-500"><i class="fas fa-image mr-1"></i> img4</div></div>
+            <div class="gallery-item"><img src="img5.jpg" alt="work 5" class="gallery-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><div class="gallery-img hidden items-center justify-center bg-gray-200 text-gray-500"><i class="fas fa-image mr-1"></i> img5</div></div>
+            <div class="gallery-item"><img src="img6.jpg" alt="work 6" class="gallery-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><div class="gallery-img hidden items-center justify-center bg-gray-200 text-gray-500"><i class="fas fa-image mr-1"></i> img6</div></div>
+            <div class="gallery-item"><img src="img7.jpg" alt="work 7" class="gallery-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><div class="gallery-img hidden items-center justify-center bg-gray-200 text-gray-500"><i class="fas fa-image mr-1"></i> img7</div></div>
+            <div class="gallery-item"><img src="img8.jpg" alt="work 8" class="gallery-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><div class="gallery-img hidden items-center justify-center bg-gray-200 text-gray-500"><i class="fas fa-image mr-1"></i> img8</div></div>
+            <div class="gallery-item"><img src="img9.jpg" alt="work 9" class="gallery-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><div class="gallery-img hidden items-center justify-center bg-gray-200 text-gray-500"><i class="fas fa-image mr-1"></i> img9</div></div>
+            <div class="gallery-item"><img src="img10.jpg" alt="work 10" class="gallery-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><div class="gallery-img hidden items-center justify-center bg-gray-200 text-gray-500"><i class="fas fa-image mr-1"></i> img10</div></div>
+        </div>
+        <div class="p-4 bg-gray-50 text-center text-sm text-gray-500 border-t">
+            <i class="fas fa-check-circle text-emerald-600"></i> completed projects by Conrad
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL: General contact / WhatsApp ===== -->
+<div id="contactModal" class="fixed inset-0 modal-bg flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl overflow-hidden">
+        <div class="bg-emerald-600 px-5 py-4 flex justify-between items-center text-white">
+            <div class="flex items-center gap-3">
+                <i class="fab fa-whatsapp text-2xl"></i>
+                <span class="font-bold text-lg">WhatsApp Business</span>
+            </div>
+            <button onclick="closeModal('contact')" class="text-white/80 hover:text-white text-xl"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="p-6">
+            <p class="text-gray-600 mb-3 flex items-center gap-2"><i class="fas fa-user text-emerald-700"></i> Conrad will respond quickly</p>
+            <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 mb-5">
+                <div class="text-xs text-gray-500 mb-1">pre-filled message</div>
+                <div class="bg-white p-3 rounded-lg border border-gray-200 text-gray-800 italic">
+                    <i class="fas fa-comment-dots text-emerald-600 mr-1"></i> 
+                    "Hello Conrad! I need a quote for handyman work. Job: [describe] – thanks."
+                </div>
+            </div>
+            <a href="https://wa.me/27652811751?text=Hello%20Conrad!%20I%20need%20a%20quote%20for%20handyman%20work.%20Job%3A%20" target="_blank" class="whatsapp-strip hover:bg-emerald-600 text-white w-full py-4 rounded-xl flex items-center justify-center gap-3 font-semibold text-lg transition shadow-md">
+                <i class="fab fa-whatsapp text-2xl"></i> Open WhatsApp
+            </a>
+            <div class="flex items-center gap-2 text-sm text-gray-500 justify-center pt-4">
+                <i class="fas fa-phone-alt"></i> <span class="font-mono">065 281 1751</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- javascript : modals and dynamic service content -->
+<script>
+    // service database (detailed descriptions)
+    const serviceDetails = {
+        handyman: {
+            title: 'Handyman & General Maintenance',
+            icon: 'fa-tools',
+            desc: 'From furniture assembly to minor repairs, we handle all odd jobs. Hanging shelves, fixing doors, caulking, and general upkeep – inside and out.',
+            extra: '🛠️ Hourly or per-project · free consultation',
+            waMsg: 'Hello Conrad! I need a quote for handyman work (general maintenance). Job: '
+        },
+        carpentry: {
+            title: 'Carpentry',
+            icon: 'fa-hammer',
+            desc: 'Custom shelves, door repairs, skirting boards, deck fixing, and wooden furniture restoration. Precision carpentry for your home.',
+            extra: '📐 Custom designs · all wood types',
+            waMsg: 'Hello Conrad! I need a quote for carpentry work. Job: '
+        },
+        electrical: {
+            title: 'Electrical Work',
+            icon: 'fa-bolt',
+            desc: 'Faulty switches, light fixture installation, ceiling fans, power points, and circuit troubleshooting. Certified & safe.',
+            extra: '⚡ Licensed electrician · safety guaranteed',
+            waMsg: 'Hello Conrad! I need a quote for electrical work. Job: '
+        },
+        plumbing: {
+            title: 'Plumbing',
+            icon: 'fa-wrench',
+            desc: 'Leaky taps, blocked drains, toilet repairs, pipe replacement, geyser maintenance. Quick response and neat work.',
+            extra: '🚰 24/7 emergency plumbing',
+            waMsg: 'Hello Conrad! I need a quote for plumbing. Job: '
+        },
+        tiling: {
+            title: 'Tiling',
+            icon: 'fa-th-large',
+            desc: 'Kitchen backsplash, bathroom floors, wall tiles, grout repair, and regrouting. Professional finish with care.',
+            extra: '🧼 Large selection of patterns',
+            waMsg: 'Hello Conrad! I need a quote for tiling work. Job: '
+        },
+        painting: {
+            title: 'Painting',
+            icon: 'fa-paint-roller',
+            desc: 'Interior & exterior painting, touch-ups, wallpaper removal, and texture coating. Neat, clean, and efficient.',
+            extra: '🎨 Quality paints · dust protection',
+            waMsg: 'Hello Conrad! I need a quote for painting. Job: '
+        },
+        gutter: {
+            title: 'Gutter Repairs & Installation',
+            icon: 'fa-cloud-rain',
+            desc: 'Clean, repair or replace gutters and downpipes. Prevent water damage with proper gutter maintenance.',
+            extra: '🌧️ Free gutter check · all materials',
+            waMsg: 'Hello Conrad! I need a quote for gutter repairs or installation. Job: '
+        },
+        install: {
+            title: 'Installations',
+            icon: 'fa-house-chimney',
+            desc: 'TV mounts, curtain rails, shelving, kitchen fixtures, and appliance hook-ups. Secure and professional.',
+            extra: '🔧 same-day installation available',
+            waMsg: 'Hello Conrad! I need a quote for an installation. Job: '
+        }
+    };
+
+    // modal elements
+    const serviceModal = document.getElementById('serviceModal');
+    const serviceTitle = document.getElementById('serviceModalTitle');
+    const serviceIcon = document.getElementById('serviceModalIcon');
+    const serviceDesc = document.getElementById('serviceModalDescription');
+    const serviceExtra = document.getElementById('serviceModalExtra');
+    const serviceLink = document.getElementById('serviceWhatsAppLink');
+
+    function openServiceModal(serviceKey) {
+        const s = serviceDetails[serviceKey];
+        if (!s) return;
+        serviceTitle.innerText = s.title;
+        serviceIcon.className = `fas ${s.icon} text-2xl`;
+        serviceDesc.innerText = s.desc;
+        serviceExtra.innerText = s.extra;
+        const base = 'https://wa.me/27652811751?text=';
+        const encodedMsg = encodeURIComponent(s.waMsg + ' (from website)');
+        serviceLink.href = base + encodedMsg;
+        serviceModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeServiceModal() {
+        serviceModal.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    // gallery modal
+    const galleryModal = document.getElementById('galleryModal');
+    function openGalleryModal() {
+        galleryModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeGalleryModal() {
+        galleryModal.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    // contact modal (general)
+    const contactModal = document.getElementById('contactModal');
+    function openModal(type) {
+        contactModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeModal(type) {
+        contactModal.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    // click outside to close any modal
+    window.addEventListener('click', function(e) {
+        if (e.target === serviceModal) closeServiceModal();
+        if (e.target === galleryModal) closeGalleryModal();
+        if (e.target === contactModal) closeModal('contact');
+    });
+
+    // close on Esc key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            if (!serviceModal.classList.contains('hidden')) closeServiceModal();
+            if (!galleryModal.classList.contains('hidden')) closeGalleryModal();
+            if (!contactModal.classList.contains('hidden')) closeModal('contact');
+        }
+    });
+</script>
+</body>
+</html>
