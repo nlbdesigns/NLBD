@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>PayPoint POS</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand: #00C16E;
+    --brand-dark: #00A35C;
+    --brand-light: #E6FFF4;
+    --surface: #0F1117;
+    --surface-2: #1A1D27;
+    --surface-3: #22263A;
+    --surface-4: #2C3150;
+    --text: #F0F2FF;
+    --text-muted: #8891B8;
+    --danger: #FF4D6A;
+    --warn: #FFB830;
+    --radius: 18px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--surface);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  .app-wrapper {
+    width: 100%;
+    max-width: 420px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Background glow */
+  .app-wrapper::before {
+    content: '';
+    position: absolute;
+    top: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(0,193,110,0.15) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px 12px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo-icon {
+    width: 34px;
+    height: 34px;
+    background: var(--brand);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -1px;
+    box-shadow: 0 4px 14px rgba(0,193,110,0.35);
+  }
+
+  .logo-text {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+
+  .logo-text span { color: var(--brand); }
+
+  .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--surface-2);
+    border: 1px solid var(--surface-4);
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--brand);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--brand);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  /* Merchant Card */
+  .merchant-card {
+    margin: 4px 16px 0;
+    background: var(--surface-2);
+    border: 1px solid var(--surface-3);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .merchant-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--brand) 0%, #00879D 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .merchant-info { flex: 1; }
+  .merchant-name { font-size: 15px; font-weight: 600; }
+  .merchant-id { font-size: 11px; color: var(--text-muted); font-family: 'DM Mono', monospace; margin-top: 1px; }
+
+  .payfast-badge {
+    background: #09f;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 7px;
+    border-radius: 6px;
+    letter-spacing: 0.3px;
+  }
+
+  /* Amount Display */
+  .amount-section {
+    padding: 22px 20px 14px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .amount-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .amount-display {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .currency-symbol {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-top: 8px;
+    line-height: 1;
+  }
+
+  .amount-value {
+    font-size: 64px;
+    font-weight: 700;
+    letter-spacing: -2px;
+    line-height: 1;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-width: 120px;
+    transition: color 0.2s;
+  }
+
+  .amount-value.has-value { color: var(--brand); }
+
+  /* Quick amounts */
+  .quick-amounts {
+    display: flex;
+    gap: 8px;
+    padding: 0 16px 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: relative;
+    z-index: 2;
+  }
+  .quick-amounts::-webkit-scrollbar { display: none; }
+
+  .quick-btn {
+    flex-shrink: 0;
+    background: var(--surface-2);
+    border: 1px solid var(--surface-4);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .quick-btn:active, .quick-btn.active {
+    background: var(--brand);
+    border-color: var(--brand);
+    color: white;
+    transform: scale(0.96);
+  }
+
+  /* Item name area */
+  .item-section {
+    padding: 0 16px 16px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .item-input-wrap {
+    position: relative;
+    background: var(--surface-2);
+    border: 1px solid var(--surface-3);
+    border-radius: var(--radius-sm);
+    transition: border-color 0.2s;
+  }
+
+  .item-input-wrap:focus-within {
+    border-color: var(--brand);
+  }
+
+  .item-input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 16px;
+    pointer-events: none;
+  }
+
+  .item-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 13px 12px 13px 38px;
+  }
+
+  .item-input::placeholder { color: var(--text-muted); font-weight: 400; }
+
+  /* Numpad */
+  .numpad {
+    padding: 0 16px;
+    position: relative;
+    z-index: 2;
+    flex: 1;
+  }
+
+  .numpad-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .num-btn {
+    background: var(--surface-2);
+    border: 1px solid var(--surface-3);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 22px;
+    font-weight: 500;
+    padding: 0;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.1s;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .num-btn:active {
+    background: var(--surface-4);
+    transform: scale(0.94);
+    border-color: var(--surface-4);
+  }
+
+  .num-btn.zero { grid-column: span 1; }
+
+  .num-btn.dot {
+    font-size: 28px;
+    color: var(--text-muted);
+  }
+
+  .num-btn.del {
+    color: var(--danger);
+    font-size: 20px;
+  }
+
+  /* Charge button */
+  .charge-section {
+    padding: 16px 16px 28px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .charge-btn {
+    width: 100%;
+    height: 60px;
+    background: var(--brand);
+    border: none;
+    border-radius: var(--radius);
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 8px 24px rgba(0,193,110,0.35);
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .charge-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%);
+    border-radius: inherit;
+  }
+
+  .charge-btn:active {
+    transform: scale(0.97);
+    box-shadow: 0 4px 12px rgba(0,193,110,0.25);
+  }
+
+  .charge-btn:disabled {
+    background: var(--surface-3);
+    box-shadow: none;
+    color: var(--text-muted);
+    cursor: not-allowed;
+  }
+
+  .charge-btn .charge-amount {
+    background: rgba(255,255,255,0.2);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 15px;
+  }
+
+  /* Receipt/confirmation overlay */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 100;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .overlay.show {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .bottom-sheet {
+    width: 100%;
+    max-width: 420px;
+    background: var(--surface-2);
+    border-radius: 24px 24px 0 0;
+    padding: 20px 20px 36px;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .overlay.show .bottom-sheet {
+    transform: translateY(0);
+  }
+
+  .sheet-handle {
+    width: 36px;
+    height: 4px;
+    background: var(--surface-4);
+    border-radius: 2px;
+    margin: 0 auto 20px;
+  }
+
+  .sheet-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    text-align: center;
+  }
+
+  .sheet-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .receipt-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--surface-3);
+  }
+
+  .receipt-row:last-of-type { border-bottom: none; }
+
+  .receipt-label { font-size: 13px; color: var(--text-muted); }
+  .receipt-value { font-size: 15px; font-weight: 600; }
+  .receipt-value.big { font-size: 24px; color: var(--brand); font-family: 'DM Mono', monospace; }
+
+  .sheet-btn-group { display: flex; gap: 10px; margin-top: 20px; }
+
+  .sheet-btn {
+    flex: 1;
+    height: 52px;
+    border-radius: var(--radius-sm);
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .sheet-btn:active { transform: scale(0.96); }
+
+  .sheet-btn.secondary {
+    background: var(--surface-3);
+    color: var(--text);
+  }
+
+  .sheet-btn.primary {
+    background: var(--brand);
+    color: white;
+    box-shadow: 0 4px 16px rgba(0,193,110,0.3);
+  }
+
+  /* Hidden PayFast form */
+  #pf-form { display: none; }
+
+  /* Ripple */
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    transform: scale(0);
+    animation: ripple 0.5s linear;
+    pointer-events: none;
+  }
+
+  @keyframes ripple {
+    to { transform: scale(4); opacity: 0; }
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-80px);
+    background: var(--surface-3);
+    color: var(--text);
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 999;
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    white-space: nowrap;
+    border: 1px solid var(--surface-4);
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Scrollable main */
+  .main-scroll { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+  .main-scroll::-webkit-scrollbar { display: none; }
+
+  /* history pill */
+  .history-wrap {
+    padding: 0 16px 10px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .history-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface-2);
+    border: 1px solid var(--surface-3);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 6px;
+    transition: background 0.15s;
+  }
+
+  .history-pill .h-icon { font-size: 20px; }
+  .history-pill .h-info { flex: 1; }
+  .history-pill .h-name { font-size: 13px; font-weight: 600; }
+  .history-pill .h-time { font-size: 11px; color: var(--text-muted); }
+  .history-pill .h-amt { font-size: 14px; font-weight: 700; color: var(--brand); font-family: 'DM Mono', monospace; }
+
+  .section-heading {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    padding: 0 16px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Tabs */
+  .tab-bar {
+    display: flex;
+    background: var(--surface-2);
+    margin: 0 16px 16px;
+    border-radius: var(--radius-sm);
+    padding: 4px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .tab {
+    flex: 1;
+    text-align: center;
+    padding: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .tab.active {
+    background: var(--surface-4);
+    color: var(--text);
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+</style>
+</head>
+<body>
+
+<div class="app-wrapper">
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <div class="logo-icon">P</div>
+      <div class="logo-text">Pay<span>Point</span></div>
+    </div>
+    <div class="status-badge">
+      <div class="status-dot"></div>
+      Live
+    </div>
+  </div>
+
+  <!-- Merchant Card -->
+  <div class="merchant-card">
+    <div class="merchant-avatar">C</div>
+    <div class="merchant-info">
+      <div class="merchant-name">Conrad</div>
+      <div class="merchant-id">ID: 32479493</div>
+    </div>
+    <div class="payfast-badge">PayFast</div>
+  </div>
+
+  <!-- Main Scroll Area -->
+  <div class="main-scroll">
+    <!-- Tabs -->
+    <div class="tab-bar" style="margin-top:16px">
+      <div class="tab active" onclick="switchTab('charge')">Charge</div>
+      <div class="tab" onclick="switchTab('history')">History</div>
+    </div>
+
+    <!-- Charge Tab -->
+    <div id="tab-charge" class="tab-content active">
+      <!-- Amount Section -->
+      <div class="amount-section">
+        <div class="amount-label">Enter Amount</div>
+        <div class="amount-display">
+          <div class="currency-symbol">R</div>
+          <div class="amount-value" id="amount-display">0</div>
+        </div>
+      </div>
+
+      <!-- Quick Amounts -->
+      <div class="quick-amounts">
+        <button class="quick-btn" onclick="setQuick(50)">R50</button>
+        <button class="quick-btn" onclick="setQuick(100)">R100</button>
+        <button class="quick-btn" onclick="setQuick(150)">R150</button>
+        <button class="quick-btn" onclick="setQuick(200)">R200</button>
+        <button class="quick-btn" onclick="setQuick(250)">R250</button>
+        <button class="quick-btn" onclick="setQuick(500)">R500</button>
+        <button class="quick-btn" onclick="setQuick(1000)">R1 000</button>
+      </div>
+
+      <!-- Item Name -->
+      <div class="item-section">
+        <div class="item-input-wrap">
+          <span class="item-input-icon">🏷️</span>
+          <input class="item-input" id="item-name" type="text" placeholder="Item / Description (optional)" maxlength="100">
+        </div>
+      </div>
+
+      <!-- Numpad -->
+      <div class="numpad">
+        <div class="numpad-grid">
+          <button class="num-btn" onclick="numPress('1')">1</button>
+          <button class="num-btn" onclick="numPress('2')">2</button>
+          <button class="num-btn" onclick="numPress('3')">3</button>
+          <button class="num-btn" onclick="numPress('4')">4</button>
+          <button class="num-btn" onclick="numPress('5')">5</button>
+          <button class="num-btn" onclick="numPress('6')">6</button>
+          <button class="num-btn" onclick="numPress('7')">7</button>
+          <button class="num-btn" onclick="numPress('8')">8</button>
+          <button class="num-btn" onclick="numPress('9')">9</button>
+          <button class="num-btn dot" onclick="numPress('.')">·</button>
+          <button class="num-btn zero" onclick="numPress('0')">0</button>
+          <button class="num-btn del" onclick="numDel()">⌫</button>
+        </div>
+      </div>
+
+      <!-- Charge Button -->
+      <div class="charge-section">
+        <button class="charge-btn" id="charge-btn" onclick="showConfirm()" disabled>
+          <span>Charge Customer</span>
+          <span class="charge-amount" id="charge-amt-label">R0.00</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- History Tab -->
+    <div id="tab-history" class="tab-content">
+      <div class="section-heading" style="padding-top:4px">Recent Transactions</div>
+      <div class="history-wrap" id="history-list">
+        <div style="text-align:center;color:var(--text-muted);padding:40px 0;font-size:14px;">
+          No transactions yet.<br>
+          <span style="font-size:28px;display:block;margin-top:10px;">🧾</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation Overlay -->
+<div class="overlay" id="confirm-overlay">
+  <div class="bottom-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Confirm Payment</div>
+    <div class="sheet-sub">Review before sending to PayFast</div>
+
+    <div class="receipt-row">
+      <span class="receipt-label">Merchant</span>
+      <span class="receipt-value">Conrad</span>
+    </div>
+    <div class="receipt-row">
+      <span class="receipt-label">Item</span>
+      <span class="receipt-value" id="confirm-item">—</span>
+    </div>
+    <div class="receipt-row">
+      <span class="receipt-label">Amount</span>
+      <span class="receipt-value big" id="confirm-amount">R0.00</span>
+    </div>
+    <div class="receipt-row">
+      <span class="receipt-label">Processor</span>
+      <span class="receipt-value" style="color:#09f;">PayFast</span>
+    </div>
+
+    <div class="sheet-btn-group">
+      <button class="sheet-btn secondary" onclick="hideConfirm()">Cancel</button>
+      <button class="sheet-btn primary" onclick="submitPayment()">Pay Now →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Hidden PayFast Form -->
+<form id="pf-form" name="PayFastPayNowForm" action="https://payment.payfast.io/eng/process" method="post">
+  <input type="hidden" name="cmd" value="_paynow">
+  <input type="hidden" name="receiver" value="32479493">
+  <input type="hidden" name="amount" id="pf-amount" value="">
+  <input type="hidden" name="item_name" id="pf-item-name" value="">
+  <input type="hidden" name="item_description" id="pf-item-description" value="">
+</form>
+
+<script>
+  // State
+  let rawInput = '';
+  let history = JSON.parse(localStorage.getItem('pos_history') || '[]');
+
+  // Format amount display
+  function formatDisplay(raw) {
+    if (!raw) return '0';
+    if (raw.includes('.')) {
+      const parts = raw.split('.');
+      const dec = parts[1].length > 2 ? parts[1].slice(0,2) : parts[1];
+      return parseInt(parts[0]).toLocaleString() + '.' + dec;
+    }
+    return parseInt(raw).toLocaleString();
+  }
+
+  function getNumericValue() {
+    return parseFloat(rawInput || '0');
+  }
+
+  function updateDisplay() {
+    const disp = document.getElementById('amount-display');
+    const btn = document.getElementById('charge-btn');
+    const lbl = document.getElementById('charge-amt-label');
+    const val = getNumericValue();
+
+    disp.textContent = formatDisplay(rawInput);
+    disp.classList.toggle('has-value', val >= 5);
+
+    const formatted = 'R' + val.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    lbl.textContent = formatted;
+    btn.disabled = val < 5;
+  }
+
+  function numPress(key) {
+    if (key === '.') {
+      if (rawInput.includes('.')) return;
+      if (!rawInput) rawInput = '0';
+      rawInput += '.';
+    } else {
+      // Prevent more than 2 decimal places
+      if (rawInput.includes('.')) {
+        const dec = rawInput.split('.')[1];
+        if (dec.length >= 2) return;
+      }
+      // Max 7 digits before decimal
+      const whole = rawInput.split('.')[0];
+      if (!rawInput.includes('.') && whole.length >= 7) return;
+
+      if (rawInput === '0' && key !== '.') rawInput = key;
+      else rawInput += key;
+    }
+    updateDisplay();
+    vibrate(10);
+  }
+
+  function numDel() {
+    if (!rawInput) return;
+    rawInput = rawInput.slice(0, -1);
+    updateDisplay();
+    vibrate(15);
+  }
+
+  function setQuick(amount) {
+    rawInput = String(amount);
+    updateDisplay();
+    vibrate(20);
+    // Clear active states
+    document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    setTimeout(() => event.target.classList.remove('active'), 400);
+  }
+
+  function vibrate(ms) {
+    if (navigator.vibrate) navigator.vibrate(ms);
+  }
+
+  // Confirm overlay
+  function showConfirm() {
+    const val = getNumericValue();
+    if (val < 5) { showToast('Minimum amount is R5.00'); return; }
+
+    const item = document.getElementById('item-name').value.trim() || 'Sale';
+    document.getElementById('confirm-item').textContent = item;
+    document.getElementById('confirm-amount').textContent = 'R' + val.toFixed(2);
+    document.getElementById('confirm-overlay').classList.add('show');
+    vibrate(20);
+  }
+
+  function hideConfirm() {
+    document.getElementById('confirm-overlay').classList.remove('show');
+  }
+
+  function submitPayment() {
+    const val = getNumericValue();
+    const item = document.getElementById('item-name').value.trim() || 'Sale';
+
+    // Log to history
+    const tx = {
+      id: Date.now(),
+      item: item,
+      amount: val.toFixed(2),
+      time: new Date().toLocaleTimeString('en-ZA', { hour: '2-digit', minute: '2-digit' }),
+      date: new Date().toLocaleDateString('en-ZA', { day: 'numeric', month: 'short' }),
+      status: 'sent'
+    };
+    history.unshift(tx);
+    localStorage.setItem('pos_history', JSON.stringify(history.slice(0, 50)));
+    renderHistory();
+
+    // Set PayFast form values
+    document.getElementById('pf-amount').value = val.toFixed(2);
+    document.getElementById('pf-item-name').value = item;
+    document.getElementById('pf-item-description').value = item;
+
+    // Submit
+    hideConfirm();
+    document.getElementById('pf-form').submit();
+  }
+
+  // Quick amount tap outside
+  document.getElementById('confirm-overlay').addEventListener('click', function(e) {
+    if (e.target === this) hideConfirm();
+  });
+
+  // Toast
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // Tabs
+  function switchTab(tab) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelector(`.tab[onclick="switchTab('${tab}')"]`).classList.add('active');
+    document.getElementById('tab-' + tab).classList.add('active');
+    if (tab === 'history') renderHistory();
+  }
+
+  // Render history
+  function renderHistory() {
+    const el = document.getElementById('history-list');
+    if (!history.length) {
+      el.innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:40px 0;font-size:14px;">
+        No transactions yet.<br><span style="font-size:28px;display:block;margin-top:10px;">🧾</span></div>`;
+      return;
+    }
+
+    el.innerHTML = history.map(tx => `
+      <div class="history-pill">
+        <div class="h-icon">💳</div>
+        <div class="h-info">
+          <div class="h-name">${escHtml(tx.item)}</div>
+          <div class="h-time">${tx.date} · ${tx.time}</div>
+        </div>
+        <div class="h-amt">R${tx.amount}</div>
+      </div>
+    `).join('');
+  }
+
+  function escHtml(str) {
+    return str.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // Init
+  updateDisplay();
+  renderHistory();
+</script>
+</body>
+</html>
